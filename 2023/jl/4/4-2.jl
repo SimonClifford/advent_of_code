@@ -10,8 +10,8 @@ function main()
 
         # Parse as before
         winners_s, my_nums_s = split(the_rest, " | ")
-        winners = Set{SubString{String}}(split(winners_s, " ", keepempty=false))
-        my_nums = Set{SubString{String}}(split(my_nums_s, " ", keepempty=false))
+        winners = Set{SubString{String}}(split(winners_s))
+        my_nums = Set{SubString{String}}(split(my_nums_s))
         intersection = intersect(winners, my_nums)
 
         # For each new card, add the count of copies of *this* card
