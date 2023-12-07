@@ -9,7 +9,7 @@ end
 
 Hand(s::AbstractString) = Hand(s, get_handtype(s))
 
-card_values = "23456789TJQKA"
+card_values::String = "23456789TJQKA"
 split_card_values = collect(card_values)
 
 function get_handtype(h_s::AbstractString)
@@ -54,9 +54,9 @@ end
 function main()
     f = open(ARGS[1])
     inputs = stack(split.(readlines(f)))
-    hands = Hand.(inputs[1, :])
+    hands = @views Hand.(inputs[1, :])
     sp = sortperm(hands)
-    ans = zip(range(1, length(sp)), parse.(Int, inputs[2, :])[sp]) .|> prod |> sum
+    ans = @views zip(range(1, length(sp)), parse.(Int, inputs[2, :])[sp]) .|> prod |> sum
     println("Answer $ans")
 end
 

@@ -9,11 +9,11 @@ end
 
 Hand(s::AbstractString) = Hand(s, get_handtype(s))
 
-card_values = "J23456789TQKA"
-split_card_values = split(card_values, "")
+card_values::String = "J23456789TQKA"
+split_card_values = collect(card_values)
 
 function get_handtype(h_s::AbstractString)
-    hv = (sort ∘ map)(split_card_values[2:end]) do c count(c, h_s) end
+    hv = @views (sort ∘ map)(split_card_values[2:end]) do c count(c, h_s) end
     jokers = count('J', h_s)
     if hv[end] + jokers == 5
         return five
@@ -55,9 +55,9 @@ end
 function main()
     f = open(ARGS[1])
     inputs = stack(split.(readlines(f)))
-    hands = Hand.(inputs[1, :])
+    hands = @views Hand.(inputs[1, :])
     sp = sortperm(hands)
-    ans = zip(range(1, length(sp)), parse.(Int, inputs[2, :])[sp]) .|> prod |> sum
+    ans = @views zip(range(1, length(sp)), parse.(Int, inputs[2, :])[sp]) .|> prod |> sum
     println("Answer $ans")
 end
 
