@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 const global deltas = Dict{Char, Tuple{CartesianIndex{2}, CartesianIndex{2}}}(
     '|' => (CartesianIndex(0,1), CartesianIndex(0,-1)),
     '-' => (CartesianIndex(1,0), CartesianIndex(-1,0)),
@@ -34,15 +36,38 @@ function main(filename::AbstractString)
     prev_loc = s_loc[1]
 
     length = 1
+    pipe_coords = Vector{CartesianIndex{2}}()
+    push!(pipe_coords, cur_loc)
     while cur_loc != s_loc[1]
-        println("$cur_loc")
         tmp = cur_loc
         cur_loc = first(filter(l->l != prev_loc, get_exits(pipemap, cur_loc)))
         prev_loc = tmp
         length += 1
+        push!(pipe_coords, cur_loc)
     end
 
-    println("Answer: $(div(length, 2))")
+    ans1 = div(length, 2)
+    println("Part 1 answer: $ans1")
+
+    total::Int = 0
+    for i in range(1, length-1)
+        total += round(
+            Int,
+            det(
+                [pipe_coords[i][1] pipe_coords[i+1][1];
+                 pipe_coords[i][2] pipe_coords[i+1][2]]
+            )
+        )
+    end
+    total += round(
+        Int,
+        det(
+            [pipe_coords[length][1] pipe_coords[1][1];
+             pipe_coords[length][2] pipe_coords[1][2]]
+        )
+    )
+    ans2 = div(abs(total), 2) - ans1 + 1 # Where did the +1 come from?
+    println("Part 2 answer: $ans2")
 end
 
 """
